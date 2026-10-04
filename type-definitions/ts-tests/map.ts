@@ -561,6 +561,28 @@ test('#mergeDeepIn', () => {
   >();
 });
 
+test('#mergeDeepByIndex', () => {
+  expect(Map<string, number>().mergeDeepByIndex({ a: 1 })).type.toBe<
+    Map<string, number>
+  >();
+
+  expect(Map<string, number>().mergeDeepByIndex({ a: { b: 1 } })).type.toBe<
+    Map<string, number | { b: number }>
+  >();
+
+  expect(
+    Map<string, number>().mergeDeepByIndex(Map({ a: { b: 1 } }))
+  ).type.toBe<Map<string, number | { b: number }>>();
+
+  expect(
+    Map<number, number>().mergeDeepByIndex(Map<number, number>())
+  ).type.toBe<Map<number, number>>();
+
+  expect(
+    Map<number, number>().mergeDeepByIndex(Map<number, string>())
+  ).type.toBe<Map<number, string | number>>();
+});
+
 test('#mergeDeepWith', () => {
   expect(
     Map<number, number>().mergeDeepWith(

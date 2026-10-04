@@ -438,6 +438,20 @@ test('#mergeDeepIn', () => {
   >();
 });
 
+test('#mergeDeepByIndex', () => {
+  expect(OrderedMap<string, number>().mergeDeepByIndex({ a: 1 })).type.toBe<
+    OrderedMap<string, number>
+  >();
+
+  expect(
+    OrderedMap<string, number>().mergeDeepByIndex({ a: { b: 1 } })
+  ).type.toBe<OrderedMap<string, number | { b: number }>>();
+
+  expect(
+    OrderedMap<number, number>().mergeDeepByIndex(OrderedMap<number, string>())
+  ).type.toBe<OrderedMap<number, string | number>>();
+});
+
 test('#mergeDeepWith', () => {
   expect(
     OrderedMap<number, number>().mergeDeepWith(

@@ -1,5 +1,14 @@
 import { expect, test } from 'tstyche';
-import { get, has, set, remove, update } from 'immutable';
+import {
+  get,
+  has,
+  set,
+  remove,
+  update,
+  List,
+  Map,
+  mergeDeepByIndex,
+} from 'immutable';
 
 test('get', () => {
   expect(get([1, 2, 3], 0)).type.toBe<number | undefined>();
@@ -58,4 +67,24 @@ test('update', () => {
   expect(
     update({ x: 10, y: 20 }, 'x', (v: string) => v + 'a')
   ).type.toRaiseError();
+});
+
+test('mergeDeepByIndex', () => {
+  const original = { items: [{ id: 1, name: 'a' }, { id: 2 }] };
+  expect(mergeDeepByIndex(original, { items: [{ name: 'b' }] })).type.toBe<
+    typeof original
+  >();
+
+  const numbers = [1, 2, 3];
+  expect(mergeDeepByIndex(numbers, [10])).type.toBe<typeof numbers>();
+
+  expect(
+    mergeDeepByIndex(Map<string, number>(), Map<string, number>())
+  ).type.toBe<Map<string, number>>();
+
+  // The functional variants return the type of the first collection,
+  // regardless of the sources (like `mergeDeep`).
+  expect(mergeDeepByIndex(List<number>(), List<string>())).type.toBe<
+    List<number>
+  >();
 });

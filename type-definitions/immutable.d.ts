@@ -577,6 +577,28 @@ declare namespace Immutable {
       ...collections: Array<unknown>
     ): this;
 
+    /**
+     * Like `mergeDeep()`, but indexed collections (e.g. `List`s and arrays)
+     * are merged position by position instead of with `concat()`. When both
+     * collections have a value at the same index, those values are deeply
+     * merged. Trailing values of longer sources are appended, while trailing
+     * values only present in this List are kept.
+     *
+     * Keyed collections are merged the same way as with `mergeDeep()` and
+     * set-like collections are unioned.
+     *
+     * <!-- runkit:activate -->
+     * ```js
+     * const { List } = require('immutable')
+     * List([ { id: 1, name: 'a' }, { id: 2 } ])
+     *   .mergeDeepByIndex([ { name: 'b' } ])
+     * // List [ { "id": 1, "name": "b" }, { "id": 2 } ]
+     * ```
+     */
+    mergeDeepByIndex<C>(
+      ...collections: Array<Iterable<C> | ArrayLike<C>>
+    ): List<T | C>;
+
     // Transient changes
 
     /**
@@ -1242,6 +1264,31 @@ declare namespace Immutable {
       ...collections: Array<Iterable<[K, V]> | { [key: string]: V }>
     ): this;
 
+    /**
+     * Like `mergeDeep()`, except when two indexed collections (e.g. `List`s
+     * and arrays) are encountered with the same key, they are merged position
+     * by position: values at the same index are themselves deeply merged,
+     * extra trailing values of the collection being merged in are appended,
+     * and trailing values only present in the existing collection are kept.
+     *
+     * Keyed collections are merged the same way as with `mergeDeep()` and
+     * set-like collections are unioned.
+     *
+     * <!-- runkit:activate -->
+     * ```js
+     * const { Map } = require('immutable')
+     * Map({ items: [ { id: 1, name: 'a' }, { id: 2 } ] })
+     *   .mergeDeepByIndex({ items: [ { name: 'b' } ] })
+     * // Map { "items": List [ { "id": 1, "name": "b" }, { "id": 2 } ] }
+     * ```
+     */
+    mergeDeepByIndex<KC, VC>(
+      ...collections: Array<Iterable<[KC, VC]>>
+    ): Map<K | KC, V | VC>;
+    mergeDeepByIndex<C>(
+      ...collections: Array<{ [key: string]: C }>
+    ): Map<K | string, V | C>;
+
     // Deep persistent changes
 
     /**
@@ -1765,6 +1812,16 @@ declare namespace Immutable {
       ...collections: Array<Iterable<[KC, VC]>>
     ): OrderedMap<K | KC, V | VC>;
     mergeDeep<C>(
+      ...collections: Array<{ [key: string]: C }>
+    ): OrderedMap<K | string, V | C>;
+
+    /**
+     * @see Map#mergeDeepByIndex
+     */
+    mergeDeepByIndex<KC, VC>(
+      ...collections: Array<Iterable<[KC, VC]>>
+    ): OrderedMap<K | KC, V | VC>;
+    mergeDeepByIndex<C>(
       ...collections: Array<{ [key: string]: C }>
     ): OrderedMap<K | string, V | C>;
 
@@ -2906,6 +2963,13 @@ declare namespace Immutable {
       ...collections: Array<Partial<TProps> | Iterable<[string, unknown]>>
     ): this;
     mergeDeep(
+      ...collections: Array<Partial<TProps> | Iterable<[string, unknown]>>
+    ): this;
+
+    /**
+     * @see Map#mergeDeepByIndex
+     */
+    mergeDeepByIndex(
       ...collections: Array<Partial<TProps> | Iterable<[string, unknown]>>
     ): this;
 
@@ -6040,6 +6104,35 @@ declare namespace Immutable {
    * ```
    */
   function mergeDeep<C>(
+    collection: C,
+    ...collections: Array<
+      | Iterable<unknown>
+      | Iterable<[unknown, unknown]>
+      | { [key: string]: unknown }
+    >
+  ): C;
+
+  /**
+   * Like `mergeDeep()`, but indexed collections (e.g. `List`s and arrays) are
+   * merged position by position: values at the same index are themselves
+   * deeply merged, extra trailing values of the sources are appended, and
+   * trailing values only present in the target are kept. Keyed collections
+   * are merged the same way as with `mergeDeep()` and set-like collections
+   * are unioned.
+   *
+   * A functional alternative to `collection.mergeDeepByIndex()` which will
+   * also work with plain Objects and Arrays.
+   *
+   * <!-- runkit:activate -->
+   * ```js
+   * const { mergeDeepByIndex } = require('immutable')
+   * const original = { items: [ { id: 1, name: 'a' }, { id: 2 } ] }
+   * mergeDeepByIndex(original, { items: [ { name: 'b' } ] })
+   * // { items: [ { id: 1, name: 'b' }, { id: 2 } ] }
+   * console.log(original) // { items: [ { id: 1, name: 'a' }, { id: 2 } ] }
+   * ```
+   */
+  function mergeDeepByIndex<C>(
     collection: C,
     ...collections: Array<
       | Iterable<unknown>

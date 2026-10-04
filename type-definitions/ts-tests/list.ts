@@ -352,6 +352,20 @@ test('#mergeDeepIn', () => {
   expect(List<number>().mergeDeepIn([], [])).type.toBe<List<number>>();
 });
 
+test('#mergeDeepByIndex', () => {
+  expect(List<number>().mergeDeepByIndex(List<number>())).type.toBe<
+    List<number>
+  >();
+
+  expect(List<number | string>().mergeDeepByIndex(List<string>())).type.toBe<
+    List<string | number>
+  >();
+
+  expect(List<number>().mergeDeepByIndex([{ a: 1 }])).type.toBe<
+    List<number | { a: number }>
+  >();
+});
+
 test('#flatten', () => {
   expect(List<number>().flatten()).type.toBe<
     Immutable.Collection<unknown, unknown>

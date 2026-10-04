@@ -9,6 +9,7 @@ import {
   removeIn,
   updateIn,
   merge,
+  mergeDeepByIndex,
 } from 'immutable';
 
 test('#constructor', () => {
@@ -350,6 +351,29 @@ test('#mergeIn', () => {
 
 test('#mergeDeepIn', () => {
   expect(List<number>().mergeDeepIn([], [])).type.toBe<List<number>>();
+});
+
+test('#mergeDeepByIndex', () => {
+  expect(List<number>().mergeDeepByIndex(List<number>())).type.toBe<
+    List<number>
+  >();
+
+  expect(List<number>().mergeDeepByIndex(List<string>())).type.toBe<
+    List<string | number>
+  >();
+
+  expect(List<number>().mergeDeepByIndex([1, 2, 3])).type.toBe<List<number>>();
+
+  expect(List<number | string>().mergeDeepByIndex(['a'])).type.toBe<
+    List<string | number>
+  >();
+
+  // Functional form keeps plain arrays as plain arrays.
+  expect(mergeDeepByIndex([1, 2], [3])).type.toBe<number[]>();
+
+  expect(mergeDeepByIndex({ a: [1] }, { a: [2, 3] })).type.toBe<{
+    a: number[];
+  }>();
 });
 
 test('#flatten', () => {

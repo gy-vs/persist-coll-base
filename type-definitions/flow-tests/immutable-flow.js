@@ -19,6 +19,7 @@ import Immutable, {
   hasIn,
   merge,
   mergeDeep,
+  mergeDeepByIndex,
   mergeWith,
   mergeDeepWith,
   remove,
@@ -411,6 +412,17 @@ stringToNumberOrString = Map({ a: 1 }).mergeDeepWith(
 );
 // $FlowExpectedError[incompatible-call] - the array [1] is not a valid argument
 stringToNumber = Map({ a: 1 }).mergeDeepWith((previous, next, key) => 1, [1]);
+
+stringToNumberOrString = Map({ a: 1 }).mergeDeepByIndex({ a: 'b' });
+// $FlowExpectedError[incompatible-type-arg]
+stringToNumber = Map({ a: 1 }).mergeDeepByIndex({ a: 'b' });
+var arraySource: { a: Array<number> } = { a: [2, 3] };
+(mergeDeepByIndex({ a: [1] }, arraySource): { a: Array<number> });
+
+var numberList: List<number> = List([1, 2, 3]);
+(numberList.mergeDeepByIndex(List([4])): List<number>);
+// $FlowExpectedError[incompatible-cast]
+(numberList.mergeDeepByIndex(List(['a'])): List<number>);
 
 // KeyedSeq can merge into Map
 var stringToStringSeq: KeyedSeq<string, string> = Seq({ b: 'B' });

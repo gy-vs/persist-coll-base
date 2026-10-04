@@ -40,6 +40,7 @@ import { getIn } from './functional/getIn';
 import { has } from './functional/has';
 import { hasIn } from './functional/hasIn';
 import { merge, mergeDeep, mergeWith, mergeDeepWith } from './functional/merge';
+import { mergeDeepByIndex } from './functional/mergeDeepByIndex';
 import { remove } from './functional/remove';
 import { removeIn } from './functional/removeIn';
 import { set } from './functional/set';
@@ -92,6 +93,7 @@ export {
   hasIn,
   merge,
   mergeDeep,
+  mergeDeepByIndex,
   mergeWith,
   mergeDeepWith,
   remove,

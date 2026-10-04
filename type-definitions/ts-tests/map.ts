@@ -26,7 +26,7 @@ test('#constructor', () => {
 
   expect(Map<{ a: string }>({ a: 'a', b: 'b' })).type.toRaiseError();
 
-  // TODO this type is really weird, it should be `Map<string, string>` or MapOf<{ a: string }> See 
+  // TODO this type is really weird, it should be `Map<string, string>` or MapOf<{ a: string }> See
   expect(Map(List([List(['a', 'b'])]))).type.toBe<MapOf<List<List<string>>>>();
 
   expect(Map([[1, 'a']])).type.not.toBeAssignableTo<Map<number, number>>();
@@ -552,6 +552,16 @@ test('#mergeDeep', () => {
 
   expect(
     Map<number, number | string>().mergeDeep(Map<number, number>())
+  ).type.toBe<Map<number, string | number>>();
+});
+
+test('#mergeDeepByIndex', () => {
+  expect(Map<string, number>().mergeDeepByIndex({ a: 1 })).type.toBe<
+    Map<string, number>
+  >();
+
+  expect(
+    Map<number, number>().mergeDeepByIndex(Map<number, string>())
   ).type.toBe<Map<number, string | number>>();
 });
 

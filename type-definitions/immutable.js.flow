@@ -965,6 +965,7 @@ declare class List<+T>
   ): List<T | U>;
 
   merge<U>(...collections: Iterable<U>[]): List<T | U>;
+  mergeDeepByIndex<U>(...collections: Iterable<U>[]): List<T | U>;
 
   setSize(size: number): this;
 
@@ -1140,6 +1141,10 @@ declare class Map<K, +V>
     ...collections: (Iterable<[K_, V_]> | PlainObjInput<K_, V_>)[]
   ): Map<K | K_, V | V_>;
 
+  mergeDeepByIndex<K_, V_>(
+    ...collections: (Iterable<[K_, V_]> | PlainObjInput<K_, V_>)[]
+  ): Map<K | K_, V | V_>;
+
   mergeDeepWith<K_, V_>(
     merger: (oldVal: any, newVal: any, key: any) => mixed,
     ...collections: (Iterable<[K_, V_]> | PlainObjInput<K_, V_>)[]
@@ -1239,6 +1244,10 @@ declare class OrderedMap<K, +V>
   ): OrderedMap<K | K_, V | W | X>;
 
   mergeDeep<K_, V_>(
+    ...collections: (Iterable<[K_, V_]> | PlainObjInput<K_, V_>)[]
+  ): OrderedMap<K | K_, V | V_>;
+
+  mergeDeepByIndex<K_, V_>(
     ...collections: (Iterable<[K_, V_]> | PlainObjInput<K_, V_>)[]
   ): OrderedMap<K | K_, V | V_>;
 
@@ -1729,6 +1738,9 @@ declare class RecordInstance<T: Object = Object> {
     ...collections: Array<Iterable<[$Keys<T>, $ValOf<T>]> | $Shape<T>>
   ): this & $ReadOnly<T>;
   mergeDeep(
+    ...collections: Array<Iterable<[$Keys<T>, $ValOf<T>]> | $Shape<T>>
+  ): this & $ReadOnly<T>;
+  mergeDeepByIndex(
     ...collections: Array<Iterable<[$Keys<T>, $ValOf<T>]> | $Shape<T>>
   ): this & $ReadOnly<T>;
 
@@ -2304,6 +2316,14 @@ declare function mergeDeep<C>(
     | PlainObjInput<$KeyOf<C>, $ValOf<C>>
   >
 ): C;
+declare function mergeDeepByIndex<C>(
+  collection: C,
+  ...collections: Array<
+    | $IterableOf<C>
+    | $Shape<RecordValues<C>>
+    | PlainObjInput<$KeyOf<C>, $ValOf<C>>
+  >
+): C;
 declare function mergeDeepWith<C>(
   merger: (oldVal: any, newVal: any, key: any) => mixed,
   collection: C,
@@ -2350,6 +2370,7 @@ export {
   merge,
   mergeWith,
   mergeDeep,
+  mergeDeepByIndex,
   mergeDeepWith,
 };
 
@@ -2394,6 +2415,7 @@ export default {
   merge,
   mergeWith,
   mergeDeep,
+  mergeDeepByIndex,
   mergeDeepWith,
 };
 
